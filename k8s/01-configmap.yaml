@@ -1,0 +1,20 @@
+# armazena parâmetros que não sejam sensíveis
+# os parâmetros MongoDB, RabbitMQ e JWT utilizam o padrão de duplo sublinhado para seções aninhadas no linux
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-api-config
+  labels:
+    app: catalog-api
+data:
+  ASPNETCORE_ENVIRONMENT: "Development"
+  RabbitMQ__HostName: "rabbitmq-service"
+  RabbitMQ__Port: "5672"
+  RabbitMQ__UserName: "guest"
+  RabbitMQ__Exchange: "fcg.catalog.events"
+  RabbitMQ__PaymentsExchange: "fcg.payments.events"
+  RabbitMQ__PaymentProcessedQueue: "catalog.payment-processed"
+  RabbitMQ__PaymentProcessedRoutingKey: "payment.*"
+  Jwt__Issuer: "FCG02.UsersAPI"
+  Jwt__Audience: "FCG02.CloudGamesClients"

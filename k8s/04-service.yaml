@@ -1,0 +1,16 @@
+# Service garante que o IP do container seja constante
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-api-service
+  labels:
+    app: catalog-api
+spec:
+  type: ClusterIP # valores válidos são: "ClusterIP", "ExternalName", "LoadBalancer", "NodePort"
+  selector:
+    app: catalog-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

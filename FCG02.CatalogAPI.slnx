@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FCG02.CatalogAPI.API/FCG02.CatalogAPI.API.csproj" />
+    <Project Path="src/FCG02.CatalogAPI.Application/FCG02.CatalogAPI.Application.csproj" />
+    <Project Path="src/FCG02.CatalogAPI.Domain/FCG02.CatalogAPI.Domain.csproj" />
+    <Project Path="src/FCG02.CatalogAPI.Infrastructure/FCG02.CatalogAPI.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FCG02.CatalogAPI.UnitTests/FCG02.CatalogAPI.UnitTests.csproj" />
+  </Folder>
+</Solution>
