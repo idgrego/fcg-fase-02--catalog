@@ -136,6 +136,28 @@ A API estará acessível em `http://localhost:5000` (ou na porta informada no te
 
 ---
 
+### 3.3. Dicionário de Variáveis de Ambiente
+
+As seguintes variáveis configuram o comportamento da **CatalogAPI** em contêineres e ambientes produtivos:
+
+| Variável de Ambiente | Descrição | Exemplo de Valor |
+|---|---|---|
+| `ASPNETCORE_ENVIRONMENT` | Perfil de execução do ASP.NET Core | `Development` ou `Production` |
+| `ConnectionStrings__DefaultConnection` | String de conexão para o Azure Database (`fcg-02-catalogdb`) | `Server=tcp:...;Database=fcg-02-catalogdb;...` |
+| `RabbitMQ__HostName` | Endereço do broker RabbitMQ | `rabbitmq` ou `localhost` |
+| `RabbitMQ__Port` | Porta do broker RabbitMQ | `5672` |
+| `RabbitMQ__UserName` | Usuário de autenticação no RabbitMQ | `guest` |
+| `RabbitMQ__Password` | Senha de autenticação no RabbitMQ | `guest` |
+| `RabbitMQ__Exchange` | Exchange do catálogo para publicação de pedidos | `fcg.catalog.events` |
+| `RabbitMQ__PaymentsExchange` | Exchange de pagamentos para consumo de resultados | `fcg.payments.events` |
+| `RabbitMQ__PaymentProcessedQueue` | Fila exclusiva para confirmações de pagamento | `catalog.payment-processed` |
+| `RabbitMQ__PaymentProcessedRoutingKey` | Routing Key para consumir eventos de pagamento | `payment.*` |
+| `Jwt__SecretKey` | Chave criptográfica HMAC-SHA256 para validar tokens da UsersAPI | Chave simétrica com mais de 32 caracteres |
+| `Jwt__Issuer` | Emissor esperado do token JWT | `FCG02.UsersAPI` |
+| `Jwt__Audience` | Destinatário esperado do token JWT | `FCG02.CloudGamesClients` |
+
+---
+
 ## 4. Endpoints HTTP & Documentação Interativa (Scalar)
 
 Com o serviço em execução, acesse a interface interativa do **Scalar**:

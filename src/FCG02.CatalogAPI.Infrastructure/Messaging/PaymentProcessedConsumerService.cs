@@ -35,7 +35,7 @@ public class PaymentProcessedConsumerService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("[RabbitMQ Worker] Inicializando consumidor de pagamentos em {Host}:{Port}...",
+        _logger.LogDebug("[RabbitMQ Worker] Inicializando consumidor de pagamentos em {Host}:{Port}...",
             _settings.HostName, _settings.Port);
 
         var factory = new ConnectionFactory
@@ -90,7 +90,7 @@ public class PaymentProcessedConsumerService : BackgroundService
                 cancellationToken: stoppingToken
             );
 
-            _logger.LogInformation("[RabbitMQ Worker] Consumidor ativo na fila '{Queue}' vinculada à exchange '{Exchange}' (RoutingKey: '{RoutingKey}')",
+            _logger.LogDebug("[RabbitMQ Worker] Consumidor ativo na fila '{Queue}' vinculada à exchange '{Exchange}' (RoutingKey: '{RoutingKey}')",
                 _settings.PaymentProcessedQueue, _settings.PaymentsExchange, _settings.PaymentProcessedRoutingKey);
 
             // Mantém o worker ativo aguardando mensagens até o sinal de encerramento do host
@@ -98,7 +98,7 @@ public class PaymentProcessedConsumerService : BackgroundService
         }
         catch (OperationCanceledException)
         {
-            _logger.LogInformation("🛑 [RabbitMQ Worker] Encerrando o consumidor de pagamentos...");
+            _logger.LogDebug("🛑 [RabbitMQ Worker] Encerrando o consumidor de pagamentos...");
         }
         catch (Exception ex)
         {
@@ -113,7 +113,7 @@ public class PaymentProcessedConsumerService : BackgroundService
 
         try
         {
-            _logger.LogInformation("[RabbitMQ Worker] Mensagem recebida! RoutingKey: '{RoutingKey}', DeliveryTag: {Tag}",
+            _logger.LogDebug("[RabbitMQ Worker] Mensagem recebida! RoutingKey: '{RoutingKey}', DeliveryTag: {Tag}",
                 @event.RoutingKey, @event.DeliveryTag);
 
             var options = new JsonSerializerOptions
@@ -133,8 +133,8 @@ public class PaymentProcessedConsumerService : BackgroundService
             // verifica se o pagamento foi aprovado
             if (paymentEvent.IsApproved)
             {
-                _logger.LogInformation("💳 [RabbitMQ Worker] Pagamento APROVADO para Pedido {OrderId}. UserId: {UserId}, GameId: {GameId}, Valor: R$ {Amount}",
-                    paymentEvent.OrderId, paymentEvent.UserId, paymentEvent.GameId, paymentEvent.Amount);
+                _logger.LogInformation("💳 [CatalogAPI] Evento de pagamento recebido para o Pedido {OrderId}: APROVADO (R$ {Amount:F2}). Adicionando jogo à biblioteca do usuário...",
+                    paymentEvent.OrderId, paymentEvent.Amount);
 
                 // cria o escopo para resolver o serviço Scoped de biblioteca
                 using var scope = _scopeFactory.CreateScope();
@@ -148,12 +148,12 @@ public class PaymentProcessedConsumerService : BackgroundService
                     cancellationToken: @event.CancellationToken
                 );
 
-                _logger.LogInformation("[RabbitMQ Worker] Jogo {GameId} adicionado com sucesso à biblioteca do usuário {UserId}!",
+                _logger.LogInformation("🎮 [CatalogAPI] Jogo {GameId} adicionado com sucesso à biblioteca do usuário {UserId}! Tabela(s) modificada(s): UserGames.",
                     paymentEvent.GameId, paymentEvent.UserId);
             }
             else
             {
-                _logger.LogInformation("[RabbitMQ Worker] Pagamento REJEITADO para Pedido {OrderId}. Motivo: '{Reason}'. Ignorando adição à biblioteca.",
+                _logger.LogInformation("ℹ️ [CatalogAPI] Evento de pagamento recebido para o Pedido {OrderId}: REJEITADO. Motivo: '{Reason}'. Nenhuma tabela modificada.",
                     paymentEvent.OrderId, paymentEvent.Reason ?? "Não especificado");
             }
 
